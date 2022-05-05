@@ -1,0 +1,70 @@
+{% extends 'dj_blog/base.html' %}
+{% load static %}
+
+{% block main_block %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="{% static 'css/post.css' %}" rel="stylesheet">
+
+<div class="container">
+    <!-- Retrieve all details of the posts -->
+    {% for post,image,names in mylist %}
+    {% comment %} <h1>{{tags}}</h1> {% endcomment %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-white post">
+                    <div class="post-heading">
+                        <div class="pull-left image">
+                            <!-- Start post details -->
+                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle avatar" alt="user profile image">
+                        </div>
+                        <div class="pull-left meta">
+                            <div class="title h5">
+                                <a href="#"><b>{{names}}</b></a>
+                                added a new post
+                            </div>
+                            <h6 class="text-muted time">{{post.date_of_publish}}</h6>
+                        </div>
+                    </div>
+                    <div>
+                        
+                        <!-- Check if the user is logged in so, only author post can modify posts -->
+                        {% if user.is_authenticated %}
+                        <!-- Delete and Edit buttons if logged in  -->
+                        <!-- Edit link  -->
+                           <a href="{% url 'updatePost' post.id %}">EDIT</a>
+                        <!-- Delete link  -->
+    
+                           <a href="{% url 'delete-post' post.id %}">Delete</a>
+    
+                       {% endif %}
+                    </div>
+                    <!-- Start post post description -->
+                    <div class="post-description">
+                        <h4>{{post.title}}</h4>
+                        <p>{{post.content}}</p>
+                        <h5>{{post.cat_id}}</h5>
+                    </div>
+                    <div class="post-image">
+                        <img src={% static 'img/PostsImages/' %}{{image}} class="post-img" alt="image post">
+                    </div>
+                    <div class="post-description">
+                        <div class="stats">
+                            <a href="javascript:void(0);" class="btn btn-primary stat-item">
+                                <i class="fa fa-thumbs-up icon"></i> {{post.likes}}
+                            </a>
+                            <a class="btn btn-danger stat-item" href="#!">
+                                <i class="fa fa-thumbs-down g-pos-rel g-top-1 g-mr-3"></i>
+                                {{post.dislikes}}
+                            </a>
+                            <div class="blog-post">
+                                <ul class="blog-tags list-unstyled list-inline d-flex flex-row ">
+                                    {% for tag in post.tags %}
+                                        <li><a class="btn btn-secondary all-tags " href="#"><i class="fa fa-tag "></i>{{post.tag}}</a></li>
+                                    {% endfor %} 
+                                </ul> 
+                            </div>
+                        </div>
+                    </div>
+        {% endfor %}
+    </div>
+{% endblock %}

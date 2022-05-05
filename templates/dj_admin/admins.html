@@ -1,0 +1,51 @@
+
+{% extends 'dj_admin/base_layout.html' %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid bg-dark shadow-lg p-2">
+        <div class="row mb-2">
+          <div class="col-sm-12">
+            <h1 class="text-center text-light fw-light">Admins Info</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col md-12 sm-6">
+        <table style="text-align : center;" class="table table-lg table-dark">
+          <thead>
+            <tr>
+              <!-- Admin Table Structure -->
+              <th scope="col">ID</th>
+              <th scope="col">Username</th>
+              <th scope="col">Email Address</th>
+              <th scope="col">Last login</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Put all admin details in the table -->
+            {% for admin in admins %}
+           <tr style="background-color:	#5DBCD2">
+           <td>{{admin.id}}</td>
+           <td>{{admin.username}}</td>
+           <td>{{admin.email}}</td>
+           <td>{{admin.last_login}}</td>
+           <td style="background-color:	#5DBCD2" colspan="5" style="text-align:center; padding:15px;"></td>          </tr> 
+          {%endfor%}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  {% endblock %}

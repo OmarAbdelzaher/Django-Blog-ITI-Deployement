@@ -1,0 +1,266 @@
+{% extends 'dj_blog/base.html' %}
+{% load static %}
+
+{% block main_block %}
+
+
+<html>
+
+<head>
+    <!-- Style and bootstrap Links  -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{% static 'css/landing.css' %}" rel="stylesheet">
+
+</head>
+
+
+
+<body>
+    <!-- Start Home Page -->
+    <section class="content-item " id="blog-timeline">
+        <div class="container">
+            <div class="row">
+                <!-- Title of home page  -->
+                <h2 class="bg-success text-light fw-light bg-opacity-75 shadow p-3 mb-4 text-center">Welcome to
+                    SONSZ-Blog</h2>
+                <!-- BLOG POSTS - START -->
+                <div class="col-sm-8">
+                    <div class="timeline">
+                        {% for post in pg %}
+                                <div class="blog-post">
+                                    
+                                    <!-- Avatar of user -->
+                                    <div class="blog-info ">
+                                        <img src={% static post.user.account.avatar %} class="rounded-circle img-fluid " alt="avatar-img">
+                                        
+                                        <!-- User Name  -->
+                                        <div class="bg-success bg-opacity-75 text-light text-center">{{post.user.username}}</div>
+                                    </div>
+                                    <div class="card mb-3 shadow p-3 mb-4 " >
+                                        <div class="row g-0">
+                                            <div class="col-md-4">
+                                                <!-- Post Image  -->
+                                                <a href="{% url 'post' post.id %}" target="_self">
+                                                    <img class="img-fluid rounded-start" style="height: 80%; width: 100%;" src={% static post.picture %}
+                                                        alt="post-img">
+                                                </a><br>
+                                                <br>
+                                                <div class="btn-group">
+
+                                                    <!-- Access Edit and Delete only when user logged in  -->
+                                                    {% if user.is_authenticated %}
+                                                        <!-- only author post can modify post -->
+                                                        {% if user.id == post.user.id  %}
+
+                                                                <!-- Edit Link  -->
+                                                            <a class="btn btn-sm btn-outline-success" style="text-decoration: none;" href="{% url 'updatePost' post.id %}">EDIT</a>
+                                                                                                            
+                                                                <!-- Delete Link  -->
+
+                                                            <a class="btn btn-sm btn-outline-secondary" style="text-decoration: none;" href="{% url 'delete-post' post.id %}">Delete</a>
+                                                        
+                                                        {%endif%}
+                                                    {%endif%}
+                                                </div>
+                                            </div>
+                                            <!--  Post details  -->
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                   
+
+                                                    <h3 class="card-title bg-light"><a class="text-dark fw-normal"
+                                                            href="{% url 'post' post.id %}">{{post.title}}</a>
+                                                            
+                                                    </h3>
+                                                    <p class="text-muted">{{post.date_of_publish}}</p>
+
+                                                    <p class="card-text">
+                                                        {{post.content|slice:":100" }}... <a href="{% url 'post' post.id %}" >  <small >Read more</small></a>
+                                                    </p>
+                                                    <!-- Start of tags -->
+                                                    <ul class="blog-tags list-unstyled list-inline  ">
+                                                       
+                                                        <li>
+                                                            {% for tag in post.tag.all %}
+                                                            <a class="btn btn-sm btn-success all-tags " style="margin: 1%;" href="#"><i class="fa fa-tag "></i>{{tag}}</a>
+                                                            {% endfor %}
+                                                        </li>
+                                                         
+                                                    </ul> 
+                                                    <!-- end of tags -->
+                                                </div>
+                                            </div>
+                                            <!-- End of post details -->
+                                        </div>
+                                    </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- BLOG POSTS - END -->
+                
+                <!-- SIDEBAR - START -->
+                <div class="col-sm-4  bg-light shadow p-2 ">
+                  <div class="sidebar">
+                        <!-- Start of Categories   -->
+                        <h3>Categories</h3>
+                        <div class="box categories">
+                            <ul class="list-unstyled">
+                                {% for category in categories %}
+                                <li>
+                                    <a class="text-dark" style="text-decoration: none;" href="{% url 'cat-posts' category.id %}"><span>{{ category.cat_name }}</span></a>
+                                    {% if user.is_authenticated %}
+                                    {% if user in category.user.all %}
+                                    <a type="button" class="btn un-sub btn-success"
+                                        href="{% url 'unsubscribe' category.id %}">Unsubscribe</a>
+                                    {% else %}
+                                    <a type="button" class="btn subBtn btn-outline-success"
+                                        href="{% url 'subscribe' category.id %}">Subscribe</a>
+                                    {% endif %}
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- End of Categories  -->
+
+                         <!-- Start Recent Posts  -->
+                        <h3>Recent Posts</h3>
+                        <div class="box posts">
+                            <ul class="list-unstyled">
+                                {% for post in posts|slice:":3"  %}
+
+                                    <li><i class="fa fa-chevron-right"></i><a href="{% url 'post' post.id %}">{{post.title}}</a>
+                                        <div>{{post.date_of_publish}}</div>
+                                    </li>
+
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <!-- End of Recent Posts -->
+
+                        <!-- Start of Tags  -->
+                        <h3>Tags</h3>
+                        
+                        <div class="box tags">
+                            
+                                <ul class=" blog-tags list-unstyled list-inline ">
+                                    <li>
+                                        {% for posttags in tags|slice:":9" %}
+                                        <a class="btn btn-sm btn-success all-tags " style="margin: 1%;" href="#"><i class="fa fa-tag"></i>{{posttags}}</a>
+                                        {% endfor %}
+                                    </li>
+                                </ul> 
+                            
+                        </div>
+                        <!-- End of Tags  -->
+                    </div>
+                </div>
+                <!-- SIDEBAR - END -->
+            </div>
+        </div>
+    </section>
+    <!-- End Section -->
+
+    <!-- Start Footer Section -->
+
+    <footer >
+
+        <!-- Start of pagination -->
+
+        <!-- <div class="footer-pagination  "> -->
+        <div>
+
+            <!-- Previous Section  -->
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+
+                    <!-- if page has previous show that  -->
+
+                    {% if pg.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo First</a>
+                    </li>
+                    <li class="page-item ">
+                        <a class="page-link" href="?page={{pg.previous_page_number}}">Previous</a>
+                    </li>
+
+                    <!-- if not disable previous  -->
+                    {%else%}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="?page=1">
+                            &laquo First
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            Previous
+                        </a>
+                    </li>
+                    {% endif%}
+
+
+                    <!-- <li class="page-item disabled"> <a href="#" class="page-link" >Page {{pg.number}} of {{pg.paginator.num_pages}} </a>  </li> -->
+
+                    <!-- SHOW available page numbers 1,2,3,4,......  -->
+
+                    {%for i in nums %}
+
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ forloop.counter}}">
+                            {{forloop.counter}}
+                        </a>
+                    </li>
+
+                    {% endfor %}
+
+                    <!-- Next Section  -->
+
+                    {% if pg.has_next%}
+
+                    <!-- if page has next show that  -->
+
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{pg.next_page_number}}">
+                            next
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{pg.paginator.num_pages}}">
+                            Last &raquo
+                        </a>
+                    </li>
+                    {% else %}
+                    <!-- if not disable next button  -->
+
+                    <li class="page-item disabled">
+                        <a class="page-link ">
+                            next
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link " href="?page={{pg.paginator.num_pages}}">
+                            Last &raquo
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+            </nav>
+            <!-- End of pagination -->
+        </div>
+    </footer>
+
+    <!-- End Footer Sesction -->
+
+
+
+</body>
+
+</html>
+
+{% endblock %}
+
